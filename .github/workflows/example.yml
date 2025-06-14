@@ -1,25 +1,21 @@
-name: Python application
+name: Tmate Detached Session
 
 on:
-push:
-branches: [ main ]
-pull_request:
-branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-build:
+  start-tmate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install tmate
+        run: sudo apt-get update && sudo apt-get install -y tmate
 
-runs-on: ubuntu-latest
+      - name: Start tmate detached session
+        run: |
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+          echo "🔗 SSH:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+          echo "🌐 Web:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_web}'
 
-steps:
-- name: Set up Python
-run: apt install tmate
-
-- name: Install dependencies
-run: tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-ready && tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-
-
-
-- name: Run tests
-run: |
-pytest
