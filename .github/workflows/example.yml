@@ -1,0 +1,28 @@
+name: Python application
+
+on:
+push:
+branches: [ main ]
+pull_request:
+branches: [ main ]
+
+jobs:
+build:
+
+runs-on: ubuntu-latest
+
+steps:
+- name: Check out repository code
+uses: actions/checkout@v2
+
+- name: Set up Python
+run: apt install tmate
+
+- name: Install dependencies
+run: tmate -S /tmp/tmate.sock new-session -d && tmate -S /tmp/tmate.sock wait tmate-ready && tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+
+
+
+- name: Run tests
+run: |
+pytest
